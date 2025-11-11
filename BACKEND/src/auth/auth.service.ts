@@ -11,7 +11,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = this.usersService.findByEmail(email);
+    const user = await this.usersService.findByEmail(email);
     if (user && await this.usersService.validatePassword(password, user.usersPassword)) {
       // Ne pas retourner le mot de passe
       const { usersPassword, ...result } = user;
@@ -22,7 +22,7 @@ export class AuthService {
 
   async login(user: User) {
     // Mettre à jour la date de dernière connexion
-    this.usersService.updateLastLogin(user.userId);
+    await this.usersService.updateLastLogin(user.userId);
     
     const payload = { email: user.userEmail, sub: user.userId };
     return {

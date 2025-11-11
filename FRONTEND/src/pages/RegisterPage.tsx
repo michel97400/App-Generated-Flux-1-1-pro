@@ -1,75 +1,71 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import './RegisterPage.css';
+
+// Schéma de validation Zod
+const registerSchema = z.object({
+    userName: z
+        .string()
+        .min(2, 'Le prénom doit contenir au moins 2 caractères')
+        .max(50, 'Le prénom est trop long')
+        .regex(/^[a-zA-ZÀ-ÿ\s-]+$/, 'Le prénom contient des caractères invalides'),
+    userLastname: z
+        .string()
+        .min(2, 'Le nom doit contenir au moins 2 caractères')
+        .max(50, 'Le nom est trop long')
+        .regex(/^[a-zA-ZÀ-ÿ\s-]+$/, 'Le nom contient des caractères invalides'),
+    userEmail: z
+        .string()
+        .min(1, 'L\'email est requis')
+        .email('Format d\'email invalide'),
+    userBirthdate: z
+        .string()
+        .min(1, 'La date de naissance est requise')
+        .refine((date) => {
+            const today = new Date();
+            const birth = new Date(date);
+            const age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            const finalAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate()) ? age - 1 : age;
+            return finalAge >= 18;
+        }, 'Vous devez avoir au moins 18 ans'),
+    usersPassword: z
+        .string()
+        .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+        .max(100, 'Le mot de passe est trop long')
+        .regex(/[A-Z]/, 'Le mot de passe doit contenir au moins une majuscule')
+        .regex(/[a-z]/, 'Le mot de passe doit contenir au moins une minuscule')
+        .regex(/[0-9]/, 'Le mot de passe doit contenir au moins un chiffre'),
+    confirmPassword: z.string().min(1, 'Veuillez confirmer votre mot de passe'),
+    userAcceptedPolicy: z
+        .boolean()
+        .refine((val) => val === true, 'Vous devez accepter les conditions d\'utilisation'),
+}).refine((data) => data.usersPassword === data.confirmPassword, {
+    message: 'Les mots de passe ne correspondent pas',
+    path: ['confirmPassword'],
+});
+
+type RegisterFormData = z.infer<typeof registerSchema>;
 
 function Register() {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        userName: '',
-        userLastname: '',
-        userEmail: '',
-        usersPassword: '',
-        confirmPassword: '',
-        userBirthdate: '',
-        userAcceptedPolicy: false,
-    });
-    
-    const [error, setError] = useState('');
+    const [apiError, setApiError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
-    };
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<RegisterFormData>({
+        resolver: zodResolver(registerSchema),
+        mode: 'onBlur',
+    });
 
-    const calculateAge = (birthdate: string): number => {
-        const today = new Date();
-        const birth = new Date(birthdate);
-        let age = today.getFullYear() - birth.getFullYear();
-        const monthDiff = today.getMonth() - birth.getMonth();
-        
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-            age--;
-        }
-        
-        return age;
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-
-        // Validations
-        if (!formData.userName || !formData.userLastname || !formData.userEmail || 
-            !formData.usersPassword || !formData.userBirthdate) {
-            setError('Tous les champs sont obligatoires');
-            return;
-        }
-
-        if (formData.usersPassword !== formData.confirmPassword) {
-            setError('Les mots de passe ne correspondent pas');
-            return;
-        }
-
-        if (formData.usersPassword.length < 8) {
-            setError('Le mot de passe doit contenir au moins 8 caractères');
-            return;
-        }
-
-        const age = calculateAge(formData.userBirthdate);
-        if (age < 18) {
-            setError('Vous devez avoir au moins 18 ans pour vous inscrire');
-            return;
-        }
-
-        if (!formData.userAcceptedPolicy) {
-            setError('Vous devez accepter les conditions d\'utilisation');
-            return;
-        }
-
+    const onSubmit = async (data: RegisterFormData) => {
+        setApiError('');
         setLoading(true);
 
         try {
@@ -79,25 +75,25 @@ function Register() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userName: formData.userName,
-                    userLastname: formData.userLastname,
-                    userEmail: formData.userEmail,
-                    usersPassword: formData.usersPassword,
-                    userBirthdate: formData.userBirthdate,
+                    userName: data.userName,
+                    userLastname: data.userLastname,
+                    userEmail: data.userEmail,
+                    usersPassword: data.usersPassword,
+                    userBirthdate: data.userBirthdate,
                     userAcceptedPolicy: new Date().toISOString(),
                 }),
             });
 
-            const data = await response.json();
+            const responseData = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || 'Erreur lors de l\'inscription');
+                throw new Error(responseData.message || 'Erreur lors de l\'inscription');
             }
 
             // Rediriger vers la page de connexion
             navigate('/login', { state: { message: 'Inscription réussie ! Vous pouvez maintenant vous connecter.' } });
         } catch (err: any) {
-            setError(err.message || 'Une erreur est survenue');
+            setApiError(err.message || 'Une erreur est survenue');
         } finally {
             setLoading(false);
         }
@@ -110,25 +106,26 @@ function Register() {
                     <h1 className="register-title">Créer un compte</h1>
                     <p className="register-subtitle">Rejoignez Good Pics pour générer des images avec IA</p>
 
-                    {error && (
+                    {apiError && (
                         <div className="error-message">
-                            ⚠️ {error}
+                            ⚠️ {apiError}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="register-form">
+                    <form onSubmit={handleSubmit(onSubmit)} className="register-form">
                         <div className="form-row">
                             <div className="form-group">
                                 <label htmlFor="userName">Prénom *</label>
                                 <input
                                     type="text"
                                     id="userName"
-                                    name="userName"
-                                    value={formData.userName}
-                                    onChange={handleChange}
+                                    {...register('userName')}
                                     placeholder="John"
-                                    required
+                                    className={errors.userName ? 'input-error' : ''}
                                 />
+                                {errors.userName && (
+                                    <span className="field-error">{errors.userName.message}</span>
+                                )}
                             </div>
 
                             <div className="form-group">
@@ -136,12 +133,13 @@ function Register() {
                                 <input
                                     type="text"
                                     id="userLastname"
-                                    name="userLastname"
-                                    value={formData.userLastname}
-                                    onChange={handleChange}
+                                    {...register('userLastname')}
                                     placeholder="Doe"
-                                    required
+                                    className={errors.userLastname ? 'input-error' : ''}
                                 />
+                                {errors.userLastname && (
+                                    <span className="field-error">{errors.userLastname.message}</span>
+                                )}
                             </div>
                         </div>
 
@@ -150,12 +148,13 @@ function Register() {
                             <input
                                 type="email"
                                 id="userEmail"
-                                name="userEmail"
-                                value={formData.userEmail}
-                                onChange={handleChange}
+                                {...register('userEmail')}
                                 placeholder="john.doe@example.com"
-                                required
+                                className={errors.userEmail ? 'input-error' : ''}
                             />
+                            {errors.userEmail && (
+                                <span className="field-error">{errors.userEmail.message}</span>
+                            )}
                         </div>
 
                         <div className="form-group">
@@ -163,26 +162,27 @@ function Register() {
                             <input
                                 type="date"
                                 id="userBirthdate"
-                                name="userBirthdate"
-                                value={formData.userBirthdate}
-                                onChange={handleChange}
+                                {...register('userBirthdate')}
                                 max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
-                                required
+                                className={errors.userBirthdate ? 'input-error' : ''}
                             />
+                            {errors.userBirthdate && (
+                                <span className="field-error">{errors.userBirthdate.message}</span>
+                            )}
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="usersPassword">Mot de passe * (min. 8 caractères)</label>
+                            <label htmlFor="usersPassword">Mot de passe * (min. 8 caractères, 1 majuscule, 1 chiffre)</label>
                             <input
                                 type="password"
                                 id="usersPassword"
-                                name="usersPassword"
-                                value={formData.usersPassword}
-                                onChange={handleChange}
+                                {...register('usersPassword')}
                                 placeholder="••••••••"
-                                minLength={8}
-                                required
+                                className={errors.usersPassword ? 'input-error' : ''}
                             />
+                            {errors.usersPassword && (
+                                <span className="field-error">{errors.usersPassword.message}</span>
+                            )}
                         </div>
 
                         <div className="form-group">
@@ -190,28 +190,28 @@ function Register() {
                             <input
                                 type="password"
                                 id="confirmPassword"
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
+                                {...register('confirmPassword')}
                                 placeholder="••••••••"
-                                minLength={8}
-                                required
+                                className={errors.confirmPassword ? 'input-error' : ''}
                             />
+                            {errors.confirmPassword && (
+                                <span className="field-error">{errors.confirmPassword.message}</span>
+                            )}
                         </div>
 
                         <div className="form-group-checkbox">
                             <input
                                 type="checkbox"
                                 id="userAcceptedPolicy"
-                                name="userAcceptedPolicy"
-                                checked={formData.userAcceptedPolicy}
-                                onChange={handleChange}
-                                required
+                                {...register('userAcceptedPolicy')}
                             />
                             <label htmlFor="userAcceptedPolicy">
                                 J'accepte les <Link to="/terms" className="link">conditions d'utilisation</Link> et la <Link to="/privacy" className="link">politique de confidentialité</Link> (RGPD)
                             </label>
                         </div>
+                        {errors.userAcceptedPolicy && (
+                            <span className="field-error">{errors.userAcceptedPolicy.message}</span>
+                        )}
 
                         <button 
                             type="submit" 

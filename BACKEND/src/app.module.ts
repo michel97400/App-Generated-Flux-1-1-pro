@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FluxModule } from './flux/flux.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
+import { User } from './users/entities/user.entity';
+import { Role } from './roles/entities/role.entity';
 
 @Module({
   imports: [
@@ -13,6 +16,14 @@ import { RolesModule } from './roles/roles.module';
     ConfigModule.forRoot({
       isGlobal: true, // Rendre disponible partout
       envFilePath: '.env',
+    }),
+    // Configuration TypeORM avec SQLite
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: 'database.sqlite',
+      entities: [User, Role],
+      synchronize: true, // ⚠️ À désactiver en production
+      logging: true,
     }),
     FluxModule,
     UsersModule,

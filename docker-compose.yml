@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Backend NestJS
+  backend:
+    build:
+      context: ./BACKEND
+      dockerfile: Dockerfile
+    container_name: flux-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    env_file:
+      - ./BACKEND/.env
+    volumes:
+      # Persister la base de données SQLite
+      - ./BACKEND/database.sqlite:/app/database.sqlite
+      # Persister les images générées
+      - ./BACKEND/uploads:/app/uploads
+    restart: unless-stopped
+    networks:
+      - flux-network
+
+  # Frontend React + Vite
+  frontend:
+    build:
+      context: ./FRONTEND
+      dockerfile: Dockerfile
+    container_name: flux-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - flux-network
+
+networks:
+  flux-network:
+    driver: bridge
+
+volumes:
+  database:
+  uploads:

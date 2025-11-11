@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 function UserAccount() {
   return (
@@ -7,6 +7,6 @@ function UserAccount() {
       <p>Informations du compte utilisateur</p>
     </div>
   );
-};
+}
 
 export default UserAccount;

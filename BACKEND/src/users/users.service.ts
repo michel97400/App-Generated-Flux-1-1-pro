@@ -1,18 +1,20 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserRole } from '../roles/entities/role.entity';
-import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
-// users.service.ts
 @Injectable()
 export class UsersService {
-    private users: User[] = []; // ← Entity (stockage interne)
     private readonly saltRounds = 10;
 
-    constructor() {
+    constructor(
+        @InjectRepository(User)
+        private userRepository: Repository<User>,
+    ) {
         // Créer le compte admin par défaut au démarrage
         this.initializeDefaultAdmin();
     }
@@ -22,7 +24,10 @@ export class UsersService {
         const adminPassword = 'Admin@123456'; // À changer en production !
 
         // Vérifier si l'admin n'existe pas déjà
-        const existingAdmin = this.findByEmail(adminEmail);
+        const existingAdmin = await this.userRepository.findOne({
+            where: { userEmail: adminEmail }
+        });
+        
         if (existingAdmin) {
             return;
         }
@@ -30,59 +35,53 @@ export class UsersService {
         // Hasher le mot de passe
         const hashedPassword = await bcrypt.hash(adminPassword, this.saltRounds);
 
-        // Créer le compte admin
-        const admin: User = {
-            userId: uuid(),
+        // Créer le compte admin (TypeORM génère automatiquement l'UUID)
+        const admin = this.userRepository.create({
             userName: 'Admin',
             userLastname: 'System',
             userEmail: adminEmail,
             usersPassword: hashedPassword,
             userBirthdate: new Date('1990-01-01'),
-            userRole: UserRole.ADMIN, // ✅ Rôle ADMIN
-            userCreatedAt: new Date(),
-            userUpdatedAt: new Date(),
+            userRole: UserRole.ADMIN,
             userLastlogin: null,
             userIsadult: true,
             userContentFilter: 'all',
             userAcceptedPolicy: new Date(),
-        };
+        });
 
-        this.users.push(admin);
+        await this.userRepository.save(admin);
         console.log('✅ Compte admin par défaut créé : admin@flux.com / Admin@123456');
     }
 
-    // Méthode qui REÇOIT le dto createUser et RETOURNE une Entity cretaUser
-    async create(createUserDto: CreateUserDto): Promise<User> { // ← DTO en entrée
+    async create(createUserDto: CreateUserDto): Promise<User> {
+        // Vérifier si l'email existe déjà
+        const existingUser = await this.userRepository.findOne({
+            where: { userEmail: createUserDto.userEmail }
+        });
         
-        const existingUser = this.findByEmail(createUserDto.userEmail);
-            if (existingUser) {
-                throw new ConflictException('Email already exists');
+        if (existingUser) {
+            throw new ConflictException('Email already exists');
         }
-
+        
         // Hasher le mot de passe
         const hashedPassword = await bcrypt.hash(createUserDto.usersPassword, this.saltRounds);
 
-        const user: User = {                        // ← Entity créée
-            userId: uuid(),
+        // Créer l'utilisateur (TypeORM génère l'UUID et gère les timestamps)
+        const user = this.userRepository.create({
             userName: createUserDto.userName,
             userLastname: createUserDto.userLastname,
             userEmail: createUserDto.userEmail,
             usersPassword: hashedPassword,
             userBirthdate: new Date(createUserDto.userBirthdate),
-            userRole: UserRole.USER, // Rôle par défaut
-            userCreatedAt: new Date(),
-            userUpdatedAt: new Date(),
+            userRole: UserRole.USER,
             userLastlogin: null,
             userIsadult: this.calculateAge(createUserDto.userBirthdate) >= 18,
             userContentFilter: createUserDto.userContentFilter || 'safe',
             userAcceptedPolicy: new Date(createUserDto.userAcceptedPolicy),
-        };
+        });
         
-        this.users.push(user);
-        return user;  // ← Entity en sortie
+        return await this.userRepository.save(user);
     }
-
-    
 
     private calculateAge(birthdate: string): number {
         const today = new Date();
@@ -90,7 +89,6 @@ export class UsersService {
         let age = today.getFullYear() - birth.getFullYear();
         const monthDiff = today.getMonth() - birth.getMonth();
             
-        // Si l'anniversaire n'est pas encore passé cette année, on retire 1
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
             age--;
         }
@@ -98,73 +96,64 @@ export class UsersService {
         return age;
     }
     
-    // Méthode pour vérifier le mot de passe lors de la connexion
     async validatePassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
         return await bcrypt.compare(plainPassword, hashedPassword);
     }
 
-    // Trouver un utilisateur par email (utile pour le login)
-    findByEmail(email: string): User | undefined {
-    return this.users.find(user => user.userEmail === email);
+    async findByEmail(email: string): Promise<User | null> {
+        return await this.userRepository.findOne({
+            where: { userEmail: email }
+        });
     }
 
-    // Trouver un utilisateur par ID
-    findOne(userId: string): User | undefined {
-    return this.users.find(user => user.userId === userId);
+    async findOne(userId: string): Promise<User | null> {
+        return await this.userRepository.findOne({
+            where: { userId }
+        });
     }
     
-    findAll(): User[] {  // ← Retourne des Entities
-        return this.users;
+    async findAll(): Promise<User[]> {
+        return await this.userRepository.find();
     }
 
-    // Mettre à jour un utilisateur
-    update(userId: string, updateUserDto: UpdateUserDto): User | undefined {
-        const userIndex = this.users.findIndex(user => user.userId === userId);
-        if (userIndex === -1) return undefined;
+    async update(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
+        const user = await this.userRepository.findOne({
+            where: { userId }
+        });
+        
+        if (!user) {
+            throw new NotFoundException(`User with ID ${userId} not found`);
+        }
         
         // Extraire et convertir les dates
         const { userBirthdate, userAcceptedPolicy, ...otherFields } = updateUserDto;
         
-        const updatedData: Partial<User> = {
-            ...otherFields,
-            userUpdatedAt: new Date(),
-        };
+        // Appliquer les mises à jour
+        Object.assign(user, otherFields);
         
-        // Convertir userBirthdate si présent
         if (userBirthdate) {
-            updatedData.userBirthdate = new Date(userBirthdate);
-            updatedData.userIsadult = this.calculateAge(userBirthdate) >= 18;
+            user.userBirthdate = new Date(userBirthdate);
+            user.userIsadult = this.calculateAge(userBirthdate) >= 18;
         }
         
-        // Convertir userAcceptedPolicy si présent
         if (userAcceptedPolicy) {
-            updatedData.userAcceptedPolicy = new Date(userAcceptedPolicy);
+            user.userAcceptedPolicy = new Date(userAcceptedPolicy);
         }
         
-        this.users[userIndex] = {
-            ...this.users[userIndex],
-            ...updatedData,
-        };
+        return await this.userRepository.save(user);
+    }
+
+    async remove(userId: string): Promise<void> {
+        const result = await this.userRepository.delete(userId);
         
-        return this.users[userIndex];
+        if (result.affected === 0) {
+            throw new NotFoundException(`User with ID ${userId} not found`);
+        }
     }
 
-    // Supprimer un utilisateur
-    remove(userId: string): boolean {
-    const userIndex = this.users.findIndex(user => user.userId === userId);
-    if (userIndex === -1) return false;
-    
-    this.users.splice(userIndex, 1);
-    return true;
+    async updateLastLogin(userId: string): Promise<void> {
+        await this.userRepository.update(userId, {
+            userLastlogin: new Date()
+        });
     }
-
-    // Mettre à jour la date de dernière connexion
-    updateLastLogin(userId: string): void {
-    const user = this.findOne(userId);
-    if (user) {
-        user.userLastlogin = new Date();
-        user.userUpdatedAt = new Date();
-    }
-    }
-  
 }
