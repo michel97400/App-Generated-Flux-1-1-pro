@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { User } from './users/entities/user.entity';
 import { Role } from './roles/entities/role.entity';
+import { RefreshToken } from './auth/entities/refresh-token.entity';
+
 
 @Module({
   imports: [
@@ -21,7 +23,7 @@ import { Role } from './roles/entities/role.entity';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'database.sqlite',
-      entities: [User, Role],
+      entities: [User, Role, RefreshToken],
       synchronize: true, // ⚠️ À désactiver en production
       logging: true,
     }),

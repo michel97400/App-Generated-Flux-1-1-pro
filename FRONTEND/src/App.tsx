@@ -6,6 +6,10 @@ import UserAccount from './pages/UserAccountPage';
 import Login from './pages/LoginPage';
 import Register from './pages/RegisterPage';
 import HeaderTemplate from '../src/templates/Header';
+import PicsGalery from './pages/PicsUserGalery';
+import Galery from './pages/Galery';
+
+
 
 function App() {
 
@@ -19,6 +23,8 @@ function App() {
           <Route path="/user" element={<UserAccount />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/usergalery" element={<PicsGalery />} />
+          <Route path="/galery" element={<Galery />} />
         </Routes>
       </BrowserRouter>
 

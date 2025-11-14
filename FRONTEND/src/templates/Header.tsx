@@ -59,7 +59,14 @@ function HeaderTemplate() {
                 <nav className={`nav ${menuOpen ? 'active' : ''}`}>
                     <Link to="/" className="nav-link" onClick={closeMenu}>Accueil</Link>
                     <Link to="/generate" className="nav-link" onClick={closeMenu}>Générer</Link>
-                    <Link to="/gallery" className="nav-link" onClick={closeMenu}>Galerie</Link>
+                    <Link to="/galery" className="nav-link" onClick={closeMenu}>Galerie d'images</Link>
+                    <Link
+                        to="/usergalery"
+                        className="nav-link"
+                        onClick={closeMenu}
+                    >
+                        Ma galerie
+                    </Link>
                 </nav>
 
                 {/* Actions */}
@@ -97,7 +104,7 @@ function HeaderTemplate() {
                             {/* Dropdown Menu */}
                             {profileMenuOpen && (
                                 <div className="profile-dropdown">
-                                    <Link to="/profile" className="dropdown-item" onClick={() => { setProfileMenuOpen(false); closeMenu(); }}>
+                                    <Link to="/user" className="dropdown-item" onClick={() => { setProfileMenuOpen(false); closeMenu(); }}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                             <circle cx="12" cy="7" r="4"></circle>

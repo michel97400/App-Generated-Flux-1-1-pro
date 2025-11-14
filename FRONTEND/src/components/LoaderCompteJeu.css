@@ -1,0 +1,97 @@
+.loader-jeu-patience {
+  display: block;
+  margin-top: 18px;
+  font-size: 1.08rem;
+  color: #333;
+  font-family: 'Montserrat', 'Raleway', 'Quicksand', Arial, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.loader-jeu-circle-spinner {
+  margin: 18px auto 0 auto;
+  width: 38px;
+  height: 38px;
+  border: 4px solid #eee;
+  border-top: 4px solid #b01ee9;
+  border-radius: 50%;
+  animation: loader-spin 1s linear infinite;
+}
+
+@keyframes loader-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.loader-jeu-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.loader-jeu-content {
+
+  border-radius: 600px;
+  padding: 48px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 520px;
+  height: 450px;
+  max-width: 90vw;
+  max-height: 90vh;
+  justify-content: center;
+}
+
+.loader-jeu-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-22px); }
+}
+
+.loader-jeu-messages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+
+
+.loader-jeu-message {
+
+  font-weight: bold;
+  color: #111;
+  text-align: center;
+  min-height: 2.6em;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #e91e63 0%, #ffb347 100%);
+  border-radius: 16px;
+  padding: 18px 32px;
+  box-shadow: 0 6px 24px 0 rgba(233,30,99,0.18);
+  border: 2px solid #fff3e0;
+  margin-top: 12px;
+  animation: popin 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+  transition: box-shadow 0.2s, transform 0.2s;
+  font-family: 'Montserrat', 'Raleway', 'Quicksand', Arial, sans-serif;
+}
+
+@keyframes popin {
+  0% { opacity: 0; transform: scale(0.7) translateY(20px); }
+  60% { opacity: 1; transform: scale(1.08) translateY(-4px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: scale(0.8) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

@@ -54,6 +54,7 @@ function Register() {
     const navigate = useNavigate();
     const [apiError, setApiError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const {
         register,
@@ -74,6 +75,7 @@ function Register() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include', // ✅ Inclure les cookies
                 body: JSON.stringify({
                     userName: data.userName,
                     userLastname: data.userLastname,
@@ -171,15 +173,37 @@ function Register() {
                             )}
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-group" style={{ position: 'relative' }}>
                             <label htmlFor="usersPassword">Mot de passe * (min. 8 caractères, 1 majuscule, 1 chiffre)</label>
                             <input
-                                type="password"
+                                type={showPassword ? 'text' : 'password'}
                                 id="usersPassword"
                                 {...register('usersPassword')}
                                 placeholder="••••••••"
                                 className={errors.usersPassword ? 'input-error' : ''}
+                                autoComplete="new-password"
                             />
+                            <button
+                                type="button"
+                                className="toggle-password-btn"
+                                style={{
+                                    position: 'absolute',
+                                    right: '10px',
+                                    top: '38px',
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    padding: 0,
+                                }}
+                                onClick={() => setShowPassword((v) => !v)}
+                                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                            >
+                                {showPassword ? (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13m3.1-2.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.37 4.98M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" strokeWidth={2} /></svg>
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.274.857-.67 1.664-1.175 2.39" /></svg>
+                                )}
+                            </button>
                             {errors.usersPassword && (
                                 <span className="field-error">{errors.usersPassword.message}</span>
                             )}
@@ -188,12 +212,33 @@ function Register() {
                         <div className="form-group">
                             <label htmlFor="confirmPassword">Confirmer le mot de passe *</label>
                             <input
-                                type="password"
+                                type={showPassword ? 'text' : 'password'}
                                 id="confirmPassword"
                                 {...register('confirmPassword')}
                                 placeholder="••••••••"
                                 className={errors.confirmPassword ? 'input-error' : ''}
                             />
+                            <button
+                                type="button"
+                                className="toggle-password-btn"
+                                style={{
+                                    position: 'absolute',
+                                    right: '10px',
+                                    top: '38px',
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    padding: 0,
+                                }}
+                                onClick={() => setShowPassword((v) => !v)}
+                                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                            >
+                                {showPassword ? (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13m3.1-2.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.37 4.98M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" strokeWidth={2} /></svg>
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.274.857-.67 1.664-1.175 2.39" /></svg>
+                                )}
+                            </button>
                             {errors.confirmPassword && (
                                 <span className="field-error">{errors.confirmPassword.message}</span>
                             )}

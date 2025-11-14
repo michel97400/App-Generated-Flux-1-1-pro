@@ -1,0 +1,52 @@
+# Prochaines étapes recommandées pour sécuriser et finaliser l'authentification
+
+1. **Sécuriser les cookies en production**
+   - Mettre `secure: true` pour les cookies (HTTPS obligatoire)
+   - Mettre `sameSite: 'strict'` si frontend et backend sont sur le même domaine
+   - Vérifier que le domaine du cookie est bien configuré
+
+2. **Utiliser une clé JWT secrète forte**
+   - Définir `JWT_SECRET` dans un fichier `.env` non versionné
+   - Ne jamais exposer la clé dans le code source
+
+3. **Limiter le nombre de refresh tokens par utilisateur**
+   - Un seul refresh token actif par utilisateur (déjà en place)
+   - Révoquer tous les tokens lors du logout
+
+4. **Ajouter du rate limiting sur les routes sensibles**
+   - Limiter `/auth/login` et `/auth/refresh` pour éviter les attaques par force brute
+   - Utiliser un middleware comme `express-rate-limit` ou équivalent NestJS
+
+5. **Auditer la sécurité du backend**
+   - Vérifier que toutes les routes protégées utilisent le guard JWT
+   - Vérifier que les DTOs sont bien validés
+   - Utiliser helmet pour ajouter des headers de sécurité HTTP
+
+6. **Tester le système en conditions réelles**
+   - Vérifier le fonctionnement des cookies dans différents navigateurs
+   - Tester l'expiration et le renouvellement automatique du token
+   - Vérifier la révocation du refresh token après logout
+
+7. **Préparer le déploiement**
+   - Configurer le reverse proxy (nginx) pour forcer HTTPS
+   - Vérifier les variables d'environnement en production
+   - Documenter la procédure de déploiement et de rollback
+
+8. **Surveiller et monitorer en production**
+   - Mettre en place des logs d'accès et d'erreur
+   - Utiliser un outil de monitoring (Azure Monitor, Datadog, etc.)
+   - Prévoir des alertes en cas d'activité suspecte
+
+9. **Mettre à jour la documentation technique**
+   - Décrire le flow d'authentification et de refresh
+   - Expliquer la gestion des cookies et des tokens
+   - Documenter les endpoints et les réponses attendues
+
+10. **Former les utilisateurs et l'équipe**
+    - Sensibiliser à la sécurité des sessions
+    - Expliquer le fonctionnement du refresh automatique
+    - Documenter les bonnes pratiques pour l'intégration frontend
+
+---
+
+Ces étapes te permettront d'avoir une authentification robuste, sécurisée et prête pour la production.

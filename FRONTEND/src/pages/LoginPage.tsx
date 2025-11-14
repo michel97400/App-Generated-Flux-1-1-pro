@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import LoaderCompteJeu from '../components/LoaderCompteJeu';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,12 +39,15 @@ function Login() {
         setApiError('');
         setLoading(true);
 
+        const minDelay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
         try {
             const response = await fetch('http://localhost:3000/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include', // ✅ Envoie et reçoit les cookies
                 body: JSON.stringify(data),
             });
 
@@ -53,8 +57,11 @@ function Login() {
                 throw new Error(responseData.message || 'Erreur lors de la connexion');
             }
 
-            // Sauvegarder le token et l'utilisateur dans le contexte
-            login(responseData.access_token, responseData.user);
+            // Attendre au moins 4 seconde pour le loader
+            await minDelay(4500);
+
+            // Sauvegarder uniquement l'utilisateur (les tokens sont dans les cookies)
+            login(responseData.user);
 
             // Rediriger vers la page utilisateur
             navigate('/user', { state: { message: 'Connexion réussie !' } });
@@ -64,6 +71,10 @@ function Login() {
             setLoading(false);
         }
     };
+    if (loading) {
+        return <LoaderCompteJeu />;
+    }
+
     return (
         <div className="login-page">
             <div className="login-card">
@@ -137,14 +148,7 @@ function Login() {
                         className="btn-login"
                         disabled={loading}
                     >
-                        {loading ? (
-                            <>
-                                <span className="spinner"></span>
-                                Connexion en cours...
-                            </>
-                        ) : (
-                            'Se connecter'
-                        )}
+                        Se connecter
                     </button>
                 </form>
 
