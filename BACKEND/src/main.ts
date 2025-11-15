@@ -21,7 +21,7 @@ async function bootstrap() {
 
   // Activer CORS pour le frontend
   app.enableCors({
-    origin: 'http://localhost:5174', // URL du frontend Vite
+    origin: 'http://localhost:5173', // URL du frontend Vite
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // ✅ Permet l'envoi des cookies
     allowedHeaders: 'Content-Type, Authorization',
