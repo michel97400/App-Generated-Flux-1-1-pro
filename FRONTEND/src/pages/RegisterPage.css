@@ -13,11 +13,12 @@
 }
 
 .register-card {
-    background: white;
+    background: rgb(14, 13, 13);
     border-radius: 20px;
     padding: 3rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     animation: fadeInUp 0.6s ease-out;
+    border: 2px solid #f3f4f6;
 }
 
 .register-card h1 {
@@ -41,13 +42,13 @@
 .register-title {
     font-size: 2rem;
     font-weight: 700;
-    color: #1a202c;
+    color: #fafbfd;
     margin-bottom: 0.5rem;
     text-align: center;
 }
 
 .register-subtitle {
-    color: #718096;
+    color: #f2f3f5;
     text-align: center;
     margin-bottom: 2rem;
     font-size: 1rem;
@@ -84,21 +85,23 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    color: #fff;
 }
 
 .form-group label {
     font-weight: 600;
-    color: #4a5568;
+    color: #f6f7f9;
     font-size: 0.95rem;
 }
 
 .form-group input {
     padding: 0.875rem 1rem;
-    border: 2px solid #e2e8f0;
+    border: 2px solid #f3f4f6;
     border-radius: 10px;
     font-size: 1rem;
     transition: all 0.3s ease;
     font-family: inherit;
+    color: #fff;
 }
 
 .form-group input:focus {
@@ -109,6 +112,7 @@
 
 .form-group input[type="date"] {
     cursor: pointer;
+    
 }
 
 /* Checkbox */
@@ -116,6 +120,7 @@
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
+    color: #fff;
 }
 
 .form-group-checkbox input[type="checkbox"] {
@@ -131,6 +136,7 @@
     color: #4a5568;
     line-height: 1.5;
     cursor: pointer;
+    color: #fff;
 }
 
 .link {

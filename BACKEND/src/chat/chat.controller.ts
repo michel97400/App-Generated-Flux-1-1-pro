@@ -1,0 +1,39 @@
+import { Controller, Post, Body, UseGuards, Get, Query, Delete, Param } from '@nestjs/common';
+import { ChatService } from './chat.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { User } from '../users/entities/user.entity';
+
+@Controller('chat')
+export class ChatController {
+  constructor(private readonly chatService: ChatService) {}
+
+  @Post('message')
+  @UseGuards(JwtAuthGuard)
+  async sendMessage(
+    @GetUser() user: User, 
+    @Body('message') message: string,
+    @Body('conversationId') conversationId?: string
+  ): Promise<{ response: string }> {
+    const response = await this.chatService.sendMessage(user.userId, message, conversationId || 'default');
+    return { response };
+  }
+
+  @Get('history')
+  @UseGuards(JwtAuthGuard)
+  async getHistory(@GetUser() user: User, @Query('conversationId') conversationId?: string) {
+    return this.chatService.getUserChatHistory(user.userId, conversationId);
+  }
+
+  @Get('conversations')
+  @UseGuards(JwtAuthGuard)
+  async getConversations(@GetUser() user: User) {
+    return this.chatService.getUserConversations(user.userId);
+  }
+
+  @Delete('conversation/:conversationId')
+  @UseGuards(JwtAuthGuard)
+  async deleteConversation(@GetUser() user: User, @Param('conversationId') conversationId: string) {
+    return this.chatService.deleteConversation(user.userId, conversationId);
+  }
+}

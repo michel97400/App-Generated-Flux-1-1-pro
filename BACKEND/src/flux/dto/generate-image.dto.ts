@@ -18,8 +18,6 @@ export class GenerateImageDto {
   n?: number = 1;
 
   @IsOptional()
-  @IsIn(['standard', 'hd'], {
-    message: 'La qualité doit être "standard" ou "hd"',
-  })
-  quality?: string = 'standard';
+  @IsString()
+  theme?: string;
 }

@@ -86,7 +86,7 @@ export class FluxService {
   async generateAndSave(
     dto: GenerateImageDto,
     outputPath?: string,
-  ): Promise<{ path: string; size: number }> {
+  ): Promise<{ url: string; size: number }> {
     // Générer l'image
     const result = await this.generateImage(dto);
 
@@ -115,11 +115,16 @@ export class FluxService {
 
     const fileSize = fs.statSync(finalPath).size;
 
+    // Générer l'URL pour accéder à l'image
+    const filename = path.basename(finalPath);
+    const url = `http://localhost:3000/uploads/${filename}`;
+
     this.logger.log(`💾 Image sauvegardée: ${finalPath}`);
     this.logger.log(`📊 Taille: ${(fileSize / 1024).toFixed(2)} KB`);
+    this.logger.log(`🔗 URL: ${url}`);
 
     return {
-      path: finalPath,
+      url,
       size: fileSize,
     };
   }
@@ -133,9 +138,11 @@ export class FluxService {
     if (error.response) {
       const status = error.response.status;
       const message = error.response.data?.error?.message || error.message;
+      const data = error.response.data;
 
       this.logger.error(`Status: ${status}`);
       this.logger.error(`Message: ${message}`);
+      this.logger.error(`Data: ${JSON.stringify(data)}`);
 
       switch (status) {
         case 401:
@@ -145,7 +152,7 @@ export class FluxService {
           );
         case 404:
           throw new HttpException(
-            'Ressource non trouvée - vérifiez l\'endpoint',
+            'Ressource non trouvée - vérifiez l\'endpoint et le nom du déploiement',
             HttpStatus.NOT_FOUND,
           );
         case 429:
@@ -159,11 +166,13 @@ export class FluxService {
             HttpStatus.INTERNAL_SERVER_ERROR,
           );
       }
+    } else {
+      this.logger.error(`Erreur réseau ou autre: ${error.message}`);
+      this.logger.error(`Stack: ${error.stack}`);
+      throw new HttpException(
+        'Erreur lors de la génération d\'image',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
-
-    throw new HttpException(
-      'Erreur lors de la génération d\'image',
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
   }
 }

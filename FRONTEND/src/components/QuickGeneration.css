@@ -1,0 +1,159 @@
+.quick-generation {
+  padding: 0;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+.quick-generation h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #667eea;
+}
+
+.quick-generation > p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  color: #e2e8f0;
+
+}
+
+.quick-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  max-width: 600px;
+  margin: 0 auto;
+  
+}
+
+.quick-input {
+  flex: 1;
+  min-width: 250px;
+  padding: 20px;
+  font-size: 1rem;
+  outline: none;
+  border: 2px solid #fff;
+
+}
+
+.quick-btn {
+  padding: 12px 30px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.quick-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.generated-image {
+  margin-top: 30px;
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+  border: none;
+  width: 100%;
+}
+
+.generated-image h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #f2f3f5;
+}
+
+.generated-image img {
+  border-radius: 10px;
+  max-width: 400px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.error-message {
+  color: #ff6b6b;
+  background-color: #2d1b1b;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ff6b6b;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .quick-form {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .quick-input {
+    width: 100%;
+  }
+}
+
+/* Styles pour les exemples de prompts */
+.prompt-examples {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.prompt-examples h3 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: #e2e8f0;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.example-prompt {
+  padding: 10px 15px;
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.example-prompt:hover {
+  background-color: #4a5568;
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.example-prompt:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2);
+}
+
+@media (max-width: 600px) {
+  .examples-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .example-prompt {
+    white-space: normal;
+    text-align: center;
+  }
+}

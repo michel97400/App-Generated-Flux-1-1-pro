@@ -7,26 +7,49 @@ import {
   Logger,
   Res,
   StreamableFile,
+  UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { FluxService } from './flux.service';
 import { GenerateImageDto } from './dto/generate-image.dto';
+import { ImagesService } from '../images/images.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { User } from '../users/entities/user.entity';
 
 @Controller('flux')
 export class FluxController {
   private readonly logger = new Logger(FluxController.name);
 
-  constructor(private readonly fluxService: FluxService) {}
+  constructor(
+    private readonly fluxService: FluxService,
+    private readonly imagesService: ImagesService,
+  ) {}
 
   /**
    * POST /flux/generate-and-save
-   * Génère une image et la sauvegarde localement sur le serveur
+   * Génère une image et la sauvegarde localement et en base
    */
   @Post('generate-and-save')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  async generateAndSave(@Body() dto: GenerateImageDto) {
-    this.logger.log(`📥 Requête de génération et sauvegarde reçue`);
-    return this.fluxService.generateAndSave(dto);
+  async generateAndSave(
+    @Body() dto: GenerateImageDto,
+    @GetUser() user: User,
+  ) {
+    this.logger.log(`📥 Requête de génération et sauvegarde reçue pour ${user.userEmail}`);
+    const result = await this.fluxService.generateAndSave(dto);
+
+    // Sauvegarder en base de données
+    await this.imagesService.saveImage(
+      user.userId,
+      result.url,
+      dto.prompt,
+      dto.theme,
+      dto.size,
+    );
+
+    return result;
   }
 
   /**
