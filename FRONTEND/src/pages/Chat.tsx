@@ -293,7 +293,7 @@ function Chat() {
         <div className="chat-container">
           <div className="chat-header">
             <button onClick={backToConversations} className="back-btn">
-              ← Retour aux conversations
+              ← Retour
             </button>
             <div className="conversation-title-small">
               {currentTitle}
