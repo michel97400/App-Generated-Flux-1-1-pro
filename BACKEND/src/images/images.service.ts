@@ -31,6 +31,12 @@ export class ImagesService {
       .getMany();
   }
 
+  async getImageById(imageId: string): Promise<Image | null> {
+    return this.imageRepository.findOne({
+      where: { imageId },
+    });
+  }
+
   async deleteUserImage(imageId: string, userId: string): Promise<void> {
     // First check if the image belongs to the user
     const image = await this.imageRepository.findOne({

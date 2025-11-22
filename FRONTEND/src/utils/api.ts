@@ -2,7 +2,7 @@
  * Utilitaire pour les requêtes API avec refresh automatique des tokens
  */
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = '/api';
 
 interface FetchOptions extends RequestInit {
   skipRefresh?: boolean;
@@ -50,7 +50,7 @@ export async function apiFetch(endpoint: string, options: FetchOptions = {}) {
  */
 async function refreshToken(): Promise<boolean> {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+    const response = await fetch('/api/auth/refresh', {
       method: 'POST',
       credentials: 'include',
     });
@@ -95,6 +95,19 @@ export async function apiPost(endpoint: string, data?: any) {
 export async function apiPut(endpoint: string, data?: any) {
   return apiFetch(endpoint, {
     method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: data ? JSON.stringify(data) : undefined,
+  });
+}
+
+/**
+ * Helper pour les requêtes PATCH
+ */
+export async function apiPatch(endpoint: string, data?: any) {
+  return apiFetch(endpoint, {
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
     },

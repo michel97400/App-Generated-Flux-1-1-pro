@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Weight } from 'lucide-react';
+import { apiPatch } from '../utils/api';
+
 
 function Profile() {
   const { user, refreshAuth } = useAuth();
@@ -55,14 +56,7 @@ function Profile() {
         return;
       }
 
-      const response = await fetch(`http://localhost:3000/users/${user.userId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(formData),
-      });
+      const response = await apiPatch(`/users/${user.userId}`, formData);
 
       if (response.ok) {
         // Update the auth context
@@ -157,7 +151,7 @@ function Profile() {
                 value={formData.userContentFilter}
                 onChange={handleInputChange}
                 className="form-select"
-              >
+              > 
                 <option value="low">Faible</option>
                 <option value="medium">Moyen</option>
                 <option value="high">Élevé</option>

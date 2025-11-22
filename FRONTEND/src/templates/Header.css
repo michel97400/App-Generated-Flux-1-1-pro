@@ -12,12 +12,12 @@
     top: 0;
     z-index: 1000;
     padding: 0;
-    border: 2px solid #fbfafa;
+    border: 2px solid #667eea;
     border-radius: 10px;
 }
 
 .header-container {
-    max-width: 1600px;
+
     height: 100px;
     margin: 0 auto;
     display: flex;

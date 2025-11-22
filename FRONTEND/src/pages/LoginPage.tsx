@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../utils/api';
 
 // Schéma de validation Zod
 const loginSchema = z.object({
@@ -42,13 +43,14 @@ function Login() {
         const minDelay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
         try {
-            const response = await fetch('http://localhost:3000/auth/login', {
+            const response = await apiFetch('/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include', // ✅ Envoie et reçoit les cookies
+                credentials: 'include',
                 body: JSON.stringify(data),
+                skipRefresh: true,
             });
 
             const responseData = await response.json();

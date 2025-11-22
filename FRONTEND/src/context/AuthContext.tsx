@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { apiFetch } from '../utils/api';
 
 interface User {
   userId: string;
@@ -40,9 +41,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     // Appeler le backend pour supprimer les cookies
     try {
-      await fetch('http://localhost:3000/auth/logout', {
+      await apiFetch('/auth/logout', {
         method: 'POST',
-        credentials: 'include', // ✅ Envoie les cookies
+        credentials: 'include',
+        skipRefresh: true,
       });
     } catch (error) {
       console.error('Logout error:', error);
@@ -57,9 +59,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    */
   const refreshAuth = async (): Promise<boolean> => {
     try {
-      const response = await fetch('http://localhost:3000/auth/refresh', {
+      const response = await apiFetch('/auth/refresh', {
         method: 'POST',
         credentials: 'include',
+        skipRefresh: true,
       });
 
       if (response.ok) {

@@ -97,7 +97,12 @@ const QuickGeneration: React.FC = () => {
       {imageUrl && (
         <div className="generated-image">
           <h3>Votre image générée :</h3>
-          <img src={imageUrl} alt="Image générée" style={{ maxWidth: '100%', height: 'auto' }} />
+          {/* Si l'URL commence par /uploads, on préfixe par /api pour passer par le proxy */}
+          <img
+            src={imageUrl.startsWith('/uploads') ? `/api${imageUrl}` : imageUrl}
+            alt="Image générée"
+            style={{ maxWidth: '100%', height: 'auto' }}
+          />
         </div>
       )}
     </div>

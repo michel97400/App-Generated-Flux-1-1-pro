@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { apiFetch } from '../utils/api';
 import './RegisterPage.css';
 
 // Schéma de validation Zod
@@ -70,12 +71,12 @@ function Register() {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3000/auth/register', {
+            const response = await apiFetch('/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include', // ✅ Inclure les cookies
+                credentials: 'include',
                 body: JSON.stringify({
                     userName: data.userName,
                     userLastname: data.userLastname,
@@ -84,6 +85,7 @@ function Register() {
                     userBirthdate: data.userBirthdate,
                     userAcceptedPolicy: new Date().toISOString(),
                 }),
+                skipRefresh: true,
             });
 
             const responseData = await response.json();
