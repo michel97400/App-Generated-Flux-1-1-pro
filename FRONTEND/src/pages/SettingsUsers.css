@@ -1,17 +1,18 @@
 .settings-container {
   width: 100%;
-  padding: 0;
+  padding: 100px;
   font-family: Arial, sans-serif;
   height: 100%;
+
 }
 
 .settings-container h1 {
-  color: #333;
+  color: #fcfbfb;
   margin-bottom: 30px;
 }
 
 .settings-container h2 {
-  color: #444;
+  color: #f3efef;
   margin-bottom: 20px;
   border-bottom: 2px solid #007bff;
   padding-bottom: 10px;
@@ -25,7 +26,7 @@
 
 .message.success {
   background-color: #d4edda;
-  color: #155724;
+  color: #f6f8f7;
   border: 1px solid #c3e6cb;
 }
 
@@ -57,7 +58,7 @@
 
 .setting-item label {
   font-weight: bold;
-  color: #333;
+  color: #f9f5f5;
 }
 
 .setting-item select,
@@ -80,7 +81,7 @@
 }
 
 .setting-item small {
-  color: #666;
+  color: #fbf7f7;
   font-size: 12px;
 }
 
@@ -119,7 +120,7 @@
 .setting-item input:disabled,
 .setting-item textarea:disabled {
   background-color: #f8f9fa;
-  color: #6c757d;
+  color: #f5f5f5;
   cursor: not-allowed;
   opacity: 0.6;
 }

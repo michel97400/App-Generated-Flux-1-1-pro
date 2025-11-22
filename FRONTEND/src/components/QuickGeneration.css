@@ -1,159 +1,313 @@
 .quick-generation {
-  padding: 0;
+  padding: 20px;
   text-align: center;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: transparent;
+}
+
+.generation-header {
+  margin-bottom: 40px;
+  max-width: 600px;
 }
 
 .quick-generation h2 {
-  font-size: 2rem;
-  margin-bottom: 10px;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
   color: #667eea;
+  font-weight: 300;
+  letter-spacing: -0.5px;
 }
 
-.quick-generation > p {
+.quick-generation > .generation-header p {
   font-size: 1.1rem;
-  margin-bottom: 30px;
+  margin-bottom: 0;
   color: #e2e8f0;
-
+  opacity: 0.8;
+  line-height: 1.6;
 }
 
-.quick-form {
+/* Image Display Mode */
+.image-display {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 15px;
-  flex-wrap: wrap;
-  max-width: 600px;
-  margin: 0 auto;
-  
-}
-
-.quick-input {
-  flex: 1;
-  min-width: 250px;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
   padding: 20px;
-  font-size: 1rem;
-  outline: none;
-  border: 2px solid #fff;
-
 }
 
-.quick-btn {
-  padding: 12px 30px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+.image-container {
+  position: relative;
+  margin-bottom: 30px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.image-container:hover {
+  transform: scale(1.02);
+  box-shadow: 
+    0 30px 80px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+.generated-image-large {
+  max-width: 100%;
+  max-height: 70vh;
+  width: auto;
+  height: auto;
+  border-radius: 15px;
+  display: block;
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+.image-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.back-btn {
+  padding: 12px 24px;
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)),
+    rgba(102, 126, 234, 0.9);
   color: #fff;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 25px;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 500;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-.quick-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+.back-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08)),
+    rgba(102, 126, 234, 1);
 }
 
-.generated-image {
-  margin-top: 30px;
-  padding: 0;
-  background-color: transparent;
-  border-radius: 0;
-  border: none;
-  width: 100%;
-}
-
-.generated-image h3 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  color: #f2f3f5;
-}
-
-.generated-image img {
-  border-radius: 10px;
-  max-width: 400px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
-
-.error-message {
-  color: #ff6b6b;
-  background-color: #2d1b1b;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ff6b6b;
-  margin-top: 10px;
-  font-size: 0.9rem;
-}
-
-@media (max-width: 600px) {
-  .quick-form {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .quick-input {
-    width: 100%;
-  }
-}
-
-/* Styles pour les exemples de prompts */
+/* Generation Mode */
 .prompt-examples {
-  margin-bottom: 30px;
-  text-align: center;
+  margin-bottom: 40px;
+  width: 100%;
+  max-width: 900px;
 }
 
 .prompt-examples h3 {
-  font-size: 1.2rem;
-  margin-bottom: 15px;
+  font-size: 1.3rem;
+  margin-bottom: 20px;
   color: #e2e8f0;
+  font-weight: 400;
+  opacity: 0.9;
 }
 
 .examples-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 10px;
-  max-width: 800px;
-  margin: 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  width: 100%;
 }
 
 .example-prompt {
-  padding: 10px 15px;
-  background-color: #2d3748;
+  padding: 12px 16px;
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+    rgba(45, 55, 72, 0.8);
   color: #e2e8f0;
-  border: 1px solid #4a5568;
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .example-prompt:hover {
-  background-color: #4a5568;
-  border-color: #667eea;
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),
+    rgba(74, 85, 104, 0.9);
+  border-color: rgba(102, 126, 234, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
 }
 
-.example-prompt:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2);
+.quick-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-@media (max-width: 600px) {
+.input-container {
+  width: 100%;
+  position: relative;
+}
+
+.quick-input {
+  width: 100%;
+  padding: 20px;
+  font-size: 1rem;
+  outline: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+    rgba(45, 55, 72, 0.8);
+  color: #e2e8f0;
+  resize: vertical;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.quick-input:focus {
+  border-color: rgba(102, 126, 234, 0.5);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),
+    rgba(45, 55, 72, 0.9);
+}
+
+.quick-input::placeholder {
+  color: rgba(226, 232, 240, 0.6);
+}
+
+.quick-btn {
+  padding: 15px 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  min-width: 160px;
+}
+
+.quick-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.quick-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message {
+  color: #ff6b6b;
+  background: 
+    linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.05)),
+    rgba(45, 27, 27, 0.8);
+  padding: 15px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  margin-top: 20px;
+  font-size: 0.95rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  max-width: 600px;
+  width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .quick-generation {
+    padding: 15px;
+  }
+  
+  .quick-generation h2 {
+    font-size: 2rem;
+  }
+  
   .examples-grid {
     grid-template-columns: 1fr;
   }
   
   .example-prompt {
-    white-space: normal;
-    text-align: center;
+    padding: 14px 18px;
+    font-size: 0.95rem;
+  }
+  
+  .quick-form {
+    max-width: 100%;
+  }
+  
+  .quick-input {
+    padding: 18px;
+    font-size: 1rem;
+  }
+  
+  .quick-btn {
+    padding: 14px 35px;
+    font-size: 1rem;
+  }
+  
+  .generated-image-large {
+    max-height: 60vh;
+  }
+  
+  .image-container {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quick-generation h2 {
+    font-size: 1.8rem;
+  }
+  
+  .generation-header {
+    margin-bottom: 30px;
+  }
+  
+  .prompt-examples h3 {
+    font-size: 1.2rem;
+  }
+  
+  .quick-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .back-btn {
+    width: 100%;
+    max-width: 250px;
   }
 }

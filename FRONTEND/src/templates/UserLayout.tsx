@@ -1,6 +1,6 @@
 import { Link, Outlet } from 'react-router-dom';
 import '../pages/UserAccountPage.css';
-import { User, Images, Settings, History, Sparkles, MessageCircleMore } from 'lucide-react';
+import { User, Images, Settings, Sparkles, MessageCircleMore } from 'lucide-react';
 
 function UserLayout() {
   return (
@@ -35,11 +35,6 @@ function UserLayout() {
               </Link>
             </li>
             
-            <li>
-              <Link to="history" className="menu-link" title="Historique">
-                <History size={24} />
-              </Link>
-            </li>
           </ul>
         </nav>
       </aside>

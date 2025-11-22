@@ -10,7 +10,7 @@ import HeaderTemplate from '../src/templates/Header';
 import PicsGalery from './pages/PicsUserGalery';
 import QuickGeneration from './components/QuickGeneration';
 import Settings from './pages/SettingsUsers';
-import Hystory from './pages/HistoryUser';
+
 import Chat from './pages/Chat';
 
 function App() {
@@ -28,7 +28,6 @@ function App() {
             <Route path="generation" element={<QuickGeneration />} />
             <Route path="chat" element={<Chat />} />
             <Route path="setting" element={<Settings />} />
-            <Route path="history" element={<Hystory/>} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

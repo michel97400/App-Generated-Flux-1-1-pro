@@ -65,8 +65,8 @@ function Login() {
             // Sauvegarder uniquement l'utilisateur (les tokens sont dans les cookies)
             login(responseData.user);
 
-            // Rediriger vers la page utilisateur
-            navigate('/user', { state: { message: 'Connexion réussie !' } });
+            // Rediriger vers la page de génération
+            navigate('/user/generation', { state: { message: 'Connexion réussie !' } });
         } catch (err: any) {
             setApiError(err.message || 'Une erreur est survenue');
         } finally {

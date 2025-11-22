@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiGet, apiPost } from '../utils/api';
-import { Trash2 } from 'lucide-react';
+import { Trash2, MousePointer2 } from 'lucide-react';
 
 interface ChatMessage {
   chatId: string;
@@ -189,17 +189,52 @@ function Chat() {
     
     const firstMessage = messages[0].chatMessage;
     // Prendre les premiers mots (max 6 mots) et limiter à 30 caractères
-    const words = firstMessage.split(' ').slice(0, 6);
+    const words = firstMessage.split(' ').slice(10, 20);
     let title = words.join(' ');
     
-    if (title.length > 30) {
-      title = title.substring(0, 27) + '...';
+    if (title.length > 100) {
+      title = title.substring(0, 90) + '...';
     }
     
     return title || 'Conversation';
   };
 
+  const groupConversationsByDate = (conversations: Conversation[]) => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const weekAgo = new Date(today);
+    weekAgo.setDate(weekAgo.getDate() - 7);
+
+    const groups: { [key: string]: Conversation[] } = {
+      'Aujourd\'hui': [],
+      'Cette semaine': [],
+      'Plus ancien': []
+    };
+
+    conversations.forEach(conv => {
+      const convDate = new Date(conv.createdAt);
+      const convDateOnly = new Date(convDate.getFullYear(), convDate.getMonth(), convDate.getDate());
+
+      if (convDateOnly.getTime() === today.getTime()) {
+        groups['Aujourd\'hui'].push(conv);
+      } else if (convDateOnly >= weekAgo) {
+        groups['Cette semaine'].push(conv);
+      } else {
+        groups['Plus ancien'].push(conv);
+      }
+    });
+
+    // Trier les conversations dans chaque groupe par date décroissante
+    Object.keys(groups).forEach(key => {
+      groups[key].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    });
+
+    return groups;
+  };
+
   const currentTitle = messages.length > 0 ? generateConversationTitle(messages) : 'Nouvelle conversation';
+
+  const groupedConversations = groupConversationsByDate(conversations);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -222,21 +257,32 @@ function Chat() {
             {conversations.length === 0 ? (
               <p className="no-conversations">Aucune conversation trouvée. Commencez une nouvelle conversation !</p>
             ) : (
-              conversations.map((conv) => (
-                <div key={conv.id} className="conversation-item" onClick={() => loadConversation(conv.id)}>
-                  <div className="conversation-header">
-                    <div className="conversation-title">{conv.title}</div>
-                    <button 
-                      className="delete-conversation-btn"
-                      onClick={(e) => deleteConversation(conv.id, e)}
-                      title="Supprimer la conversation"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                  <div className="conversation-preview">{conv.lastMessage.substring(0, 100)}...</div>
-                  <div className="conversation-meta">
-                    {conv.messageCount} messages • {new Date(conv.createdAt).toLocaleDateString('fr-FR')}
+              Object.entries(groupedConversations).map(([period, convs]) => (
+                <div key={period} className="conversation-section">
+                  <h3 className="section-title">{period}</h3>
+                  <div className="section-conversations">
+                    {convs.length === 0 ? (
+                      <p className="empty-section">Aucune conversation {period.toLowerCase()}</p>
+                    ) : (
+                      convs.map((conv) => (
+                        <div key={conv.id} className="conversation-item" onClick={() => loadConversation(conv.id)}>
+                          <div className="conversation-header">
+                            <div className="conversation-title">{conv.title}</div>
+                            <button 
+                              className="delete-conversation-btn"
+                              onClick={(e) => deleteConversation(conv.id, e)}
+                              title="Supprimer la conversation"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                          <div className="conversation-preview">{conv.lastMessage.substring(0, 100)}...</div>
+                          <div className="conversation-meta">
+                            {conv.messageCount} messages • {new Date(conv.createdAt).toLocaleDateString('fr-FR')}
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               ))
@@ -279,7 +325,7 @@ function Chat() {
           </div>
           <div className="chat-input">
             <div className="chat-input-header">
-              <h1>Chat IA</h1>
+
             </div>
             <div className="input-row">
               <textarea
@@ -291,7 +337,7 @@ function Chat() {
                 disabled={loading}
               />
               <button onClick={sendMessage} disabled={loading || !newMessage.trim()}>
-                {loading ? 'Envoi...' : 'Envoyer'}
+                  <MousePointer2 />
               </button>
             </div>
           </div>
