@@ -5,8 +5,12 @@
 // En développement, utiliser le proxy Vite (/api)
 // En production, utiliser l'URL complète du backend depuis les variables d'environnement
 const API_BASE_URL = import.meta.env.PROD
-  ? (import.meta.env.VITE_API_URL || 'https://votre-backend-url.onrender.com')
+  ? (import.meta.env.VITE_API_URL || 'https://app-generated-flux-1-1-pro-backend.onrender.com')
   : '/api';
+
+console.log('🔧 API_BASE_URL configuré:', API_BASE_URL);
+console.log('🌍 Environnement:', import.meta.env.PROD ? 'PRODUCTION' : 'DEVELOPMENT');
+console.log('📋 VITE_API_URL:', import.meta.env.VITE_API_URL);
 
 interface FetchOptions extends RequestInit {
   skipRefresh?: boolean;
@@ -126,4 +130,32 @@ export async function apiPatch(endpoint: string, data?: any) {
  */
 export async function apiDelete(endpoint: string) {
   return apiFetch(endpoint, { method: 'DELETE' });
+}
+
+/**
+ * Test de connectivité API
+ */
+export async function testApiConnection(): Promise<{ success: boolean; message: string }> {
+  try {
+    console.log('🧪 Test de connectivité API vers:', `${API_BASE_URL}/`);
+    const response = await fetch(`${API_BASE_URL}/`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+    
+    console.log('📡 Réponse du test:', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok
+    });
+    
+    if (response.ok) {
+      return { success: true, message: 'Connexion API réussie' };
+    } else {
+      return { success: false, message: `Erreur HTTP ${response.status}: ${response.statusText}` };
+    }
+  } catch (error) {
+    console.error('❌ Erreur de connectivité API:', error);
+    return { success: false, message: `Erreur réseau: ${error instanceof Error ? error.message : 'Inconnue'}` };
+  }
 }

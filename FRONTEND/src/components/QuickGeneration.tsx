@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './QuickGeneration.css';
-import { apiPost } from '../utils/api';
+import { apiPost, testApiConnection } from '../utils/api';
 
 const QuickGeneration: React.FC = () => {
   const [description, setDescription] = useState('');
@@ -8,6 +8,20 @@ const QuickGeneration: React.FC = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showImage, setShowImage] = useState(false);
+  const [apiStatus, setApiStatus] = useState<string>('Vérification de la connexion API...');
+
+  // Test de connectivité au montage
+  useEffect(() => {
+    const checkApiConnection = async () => {
+      const result = await testApiConnection();
+      setApiStatus(result.message);
+      if (!result.success) {
+        setErrorMessage(`Problème de connexion API: ${result.message}`);
+      }
+    };
+    
+    checkApiConnection();
+  }, []);
 
   // Exemples de prompts
   const promptExamples = [
@@ -130,6 +144,10 @@ const QuickGeneration: React.FC = () => {
       </form>
       
       {errorMessage && <p className="error-message">{errorMessage}</p>}
+      
+      <div className="api-status">
+        <small>🔗 {apiStatus}</small>
+      </div>
     </div>
   );
 };
