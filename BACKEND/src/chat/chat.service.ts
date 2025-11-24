@@ -28,6 +28,8 @@ export class ChatService {
 
     console.log('✅ Service Chat (GROQ) initialisé');
     console.log(`🔗 API URL: ${apiUrl}`);
+    console.log(`🔑 API Key présente: ${!!apiKey}`);
+    console.log(`🔑 Longueur API Key: ${apiKey?.length || 0} caractères`);
   }
 
   async sendMessage(userId: string, message: string, conversationId: string = 'default'): Promise<string> {
@@ -50,6 +52,10 @@ export class ChatService {
     messages.push({ role: 'user', content: message });
 
     try {
+      console.log(`📡 Appel API GROQ: ${apiUrl}/chat/completions`);
+      console.log(`🔑 Utilisation API Key (début): ${apiKey?.substring(0, 10)}...`);
+      console.log(`🤖 Modèle: ${settings.model}`);
+      
       const response = await firstValueFrom(
         this.httpService.post(
           `${apiUrl}/chat/completions`,
@@ -71,6 +77,7 @@ export class ChatService {
         ),
       );
 
+      console.log('✅ Réponse GROQ reçue avec succès');
       const aiResponse = response.data.choices[0].message.content;
 
       // Save to database

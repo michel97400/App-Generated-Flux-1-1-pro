@@ -32,6 +32,8 @@ export class FluxService {
 
     this.logger.log('✅ Service FLUX-1.1-pro initialisé');
     this.logger.log(`🔗 Endpoint: ${this.endpoint.substring(0, 50)}...`);
+    this.logger.log(`🔑 API Key présente: ${!!this.apiKey}`);
+    this.logger.log(`🔑 Longueur API Key: ${this.apiKey?.length || 0} caractères`);
   }
 
   /**
@@ -51,6 +53,9 @@ export class FluxService {
       };
 
       // Appel à l'API Azure AI Foundry
+      this.logger.log(`📡 Appel API Azure: ${this.endpoint}`);
+      this.logger.log(`🔑 Utilisation API Key (début): ${this.apiKey?.substring(0, 10)}...`);
+      
       const response = await firstValueFrom(
         this.httpService.post(this.endpoint, payload, {
           headers: {
@@ -61,7 +66,7 @@ export class FluxService {
         }),
       );
 
-      this.logger.log('✅ Génération réussie!');
+      this.logger.log('✅ Réponse Azure reçue avec succès');
 
       // Formater la réponse
       const result: ImageResponse = {
