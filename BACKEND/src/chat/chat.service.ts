@@ -15,7 +15,20 @@ export class ChatService {
     @InjectRepository(Chat)
     private readonly chatRepository: Repository<Chat>,
     private readonly chatSettingsService: ChatSettingsService,
-  ) {}
+  ) {
+    // Vérifier que les variables d'environnement sont configurées
+    const apiKey = this.configService.get<string>('GROQ_API_KEY');
+    const apiUrl = this.configService.get<string>('GROQ_API_URL');
+
+    if (!apiKey || !apiUrl) {
+      throw new Error(
+        'Configuration manquante: GROQ_API_KEY et GROQ_API_URL sont requis',
+      );
+    }
+
+    console.log('✅ Service Chat (GROQ) initialisé');
+    console.log(`🔗 API URL: ${apiUrl}`);
+  }
 
   async sendMessage(userId: string, message: string, conversationId: string = 'default'): Promise<string> {
     const apiKey = this.configService.get<string>('GROQ_API_KEY');
@@ -36,38 +49,61 @@ export class ChatService {
     }
     messages.push({ role: 'user', content: message });
 
-    const response = await firstValueFrom(
-      this.httpService.post(
-        `${apiUrl}/chat/completions`,
-        {
-          model: settings.model,
-          messages: messages,
-          max_tokens: settings.maxTokens,
-          temperature: settings.temperature,
-          top_p: settings.topP,
-          frequency_penalty: settings.frequencyPenalty,
-          presence_penalty: settings.presencePenalty,
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
+    try {
+      const response = await firstValueFrom(
+        this.httpService.post(
+          `${apiUrl}/chat/completions`,
+          {
+            model: settings.model,
+            messages: messages,
+            max_tokens: settings.maxTokens,
+            temperature: settings.temperature,
+            top_p: settings.topP,
+            frequency_penalty: settings.frequencyPenalty,
+            presence_penalty: settings.presencePenalty,
           },
-        },
-      ),
-    );
+          {
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        ),
+      );
 
-    const aiResponse = response.data.choices[0].message.content;
+      const aiResponse = response.data.choices[0].message.content;
 
-    // Save to database
-    await this.chatRepository.save({
-      userId,
-      chatMessage: message,
-      chatResponse: aiResponse,
-      conversationId,
-    });
+      // Save to database
+      await this.chatRepository.save({
+        userId,
+        chatMessage: message,
+        chatResponse: aiResponse,
+        conversationId,
+      });
 
-    return aiResponse;
+      return aiResponse;
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'appel à GROQ API:', error);
+      
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data?.error?.message || error.message;
+        
+        console.error(`Status: ${status}`);
+        console.error(`Message: ${message}`);
+        
+        if (status === 401) {
+          throw new Error('Clé API GROQ invalide ou expirée');
+        } else if (status === 429) {
+          throw new Error('Limite de taux GROQ atteinte - réessayez plus tard');
+        } else {
+          throw new Error(`Erreur GROQ: ${message}`);
+        }
+      } else {
+        console.error('Erreur réseau ou autre:', error.message);
+        throw new Error('Erreur réseau lors de la génération de texte');
+      }
+    }
   }
 
   async getUserChatHistory(userId: string, conversationId?: string): Promise<any[]> {
