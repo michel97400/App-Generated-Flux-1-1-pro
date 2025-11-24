@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe, Logger } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
 import { join } from 'path';
@@ -32,11 +33,24 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Authorization',
   });
 
+  // Configuration Swagger pour la documentation API
+  const config = new DocumentBuilder()
+    .setTitle('FLUX AI API')
+    .setDescription('API pour l\'application de génération d\'images avec FLUX AI')
+    .setVersion('1.0')
+    .addTag('auth', 'Authentification')
+    .addTag('users', 'Gestion des utilisateurs')
+    .addTag('flux', 'Génération d\'images FLUX')
+    .addTag('chat', 'Chat avec Groq AI')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   const port = process.env.PORT ?? 80;
   await app.listen(port, '0.0.0.0');
 
   logger.log(`🚀 Application démarrée sur le port ${port}`);
-  logger.log(`📖 Documentation: http://localhost:${port}`);
+  logger.log(`📖 Documentation API: http://localhost:${port}/api`);
   logger.log(`🎨 FLUX API: http://localhost:${port}/flux`);
 }
 bootstrap();
