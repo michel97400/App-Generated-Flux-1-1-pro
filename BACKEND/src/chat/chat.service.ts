@@ -26,8 +26,12 @@ export class ChatService {
       );
     }
 
+    // Corriger l'URL si elle contient /openai/v1
+    const correctedApiUrl = apiUrl.replace('/openai/v1', '').replace(/\/$/, '');
+    this.configService.set('GROQ_API_URL', correctedApiUrl);
+
     console.log('✅ Service Chat (GROQ) initialisé');
-    console.log(`🔗 API URL: ${apiUrl}`);
+    console.log(`🔗 API URL: ${correctedApiUrl}`);
     console.log(`🔑 API Key présente: ${!!apiKey}`);
     console.log(`🔑 Longueur API Key: ${apiKey?.length || 0} caractères`);
   }
