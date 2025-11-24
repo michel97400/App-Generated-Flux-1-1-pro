@@ -23,12 +23,29 @@ export class ImagesService {
   }
 
   async getUserImages(userId: string): Promise<Image[]> {
-    return this.imageRepository
+    const images = await this.imageRepository
       .createQueryBuilder('image')
-      .select(['image.imageId', 'image.imageUrl', 'image.imagePrompt', 'image.imageTheme', 'image.imageSize', 'image.imageCreatedAt'])
+      .select([
+        'image.imageId',
+        'image.imageUrl', 
+        'image.imagePrompt',
+        'image.imageTheme',
+        'image.imageSize',
+        'image.imageCreatedAt'
+      ])
       .where('image.userId = :userId', { userId })
       .orderBy('image.imageCreatedAt', 'DESC')
-      .getMany();
+      .getRawMany();
+
+    // Transformer les résultats bruts en objets simples
+    return images.map(img => ({
+      imageId: img.image_imageId,
+      imageUrl: img.image_imageUrl,
+      imagePrompt: img.image_imagePrompt,
+      imageTheme: img.image_imageTheme,
+      imageSize: img.image_imageSize,
+      imageCreatedAt: img.image_imageCreatedAt
+    }));
   }
 
   async getImageById(imageId: string): Promise<Image | null> {

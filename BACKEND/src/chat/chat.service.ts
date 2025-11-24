@@ -70,7 +70,7 @@ export class ChatService {
     return aiResponse;
   }
 
-  async getUserChatHistory(userId: string, conversationId?: string): Promise<Chat[]> {
+  async getUserChatHistory(userId: string, conversationId?: string): Promise<any[]> {
     const query = this.chatRepository
       .createQueryBuilder('chat')
       .select(['chat.chatId', 'chat.chatMessage', 'chat.chatResponse', 'chat.conversationId', 'chat.chatCreatedAt'])
@@ -81,7 +81,16 @@ export class ChatService {
       query.andWhere('chat.conversationId = :conversationId', { conversationId });
     }
 
-    return query.getMany();
+    const chats = await query.getRawMany();
+    
+    // Convertir en objets simples pour éviter les références circulaires
+    return chats.map(chat => ({
+      chatId: chat.chat_chatId,
+      chatMessage: chat.chat_chatMessage,
+      chatResponse: chat.chat_chatResponse,
+      conversationId: chat.chat_conversationId,
+      chatCreatedAt: chat.chat_chatCreatedAt
+    }));
   }
 
   async getUserConversations(userId: string): Promise<any[]> {

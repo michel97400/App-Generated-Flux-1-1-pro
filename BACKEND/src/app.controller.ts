@@ -7,6 +7,7 @@ export class AppController {
 
   @Get()
   getHello(): string {
+    console.log('🏠 [AppController] Route racine appelée');
     return this.appService.getHello();
   }
 }
