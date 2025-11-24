@@ -2,7 +2,11 @@
  * Utilitaire pour les requêtes API avec refresh automatique des tokens
  */
 
-const API_BASE_URL = '/api';
+// En développement, utiliser le proxy Vite (/api)
+// En production, utiliser l'URL complète du backend depuis les variables d'environnement
+const API_BASE_URL = import.meta.env.PROD
+  ? (import.meta.env.VITE_API_URL || 'https://votre-backend-url.onrender.com')
+  : '/api';
 
 interface FetchOptions extends RequestInit {
   skipRefresh?: boolean;
@@ -50,7 +54,7 @@ export async function apiFetch(endpoint: string, options: FetchOptions = {}) {
  */
 async function refreshToken(): Promise<boolean> {
   try {
-    const response = await fetch('/api/auth/refresh', {
+    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
       method: 'POST',
       credentials: 'include',
     });
