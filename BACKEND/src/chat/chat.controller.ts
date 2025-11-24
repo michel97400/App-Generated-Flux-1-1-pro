@@ -8,13 +8,18 @@ import { User } from '../users/entities/user.entity';
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
-  @Post('message')
+@Post('message')
   @UseGuards(JwtAuthGuard)
   async sendMessage(
     @GetUser() user: User, 
     @Body('message') message: string,
     @Body('conversationId') conversationId?: string
   ): Promise<{ response: string }> {
+    console.log('💬 [ChatController] sendMessage appelé');
+    console.log('👤 User:', user?.userId || 'undefined');
+    console.log('📝 Message:', message?.substring(0, 50) + '...');
+    console.log('🆔 ConversationId:', conversationId || 'default');
+    
     const response = await this.chatService.sendMessage(user.userId, message, conversationId || 'default');
     return { response };
   }
