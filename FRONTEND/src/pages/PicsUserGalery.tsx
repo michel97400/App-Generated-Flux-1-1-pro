@@ -107,11 +107,21 @@ function PicsGalery() {
         } else {
           const errorText = await response.text();
           console.error('❌ Erreur API:', errorText);
-          setError(`Erreur lors du chargement des images: ${response.status} ${response.statusText}`);
+          
+          // Gestion spécifique des erreurs d'authentification
+          if (response.status === 401) {
+            setError('Session expirée. Veuillez vous reconnecter.');
+            // Redirection douce vers login après un délai
+            setTimeout(() => {
+              window.location.href = '/login';
+            }, 3000);
+          } else {
+            setError(`Erreur lors du chargement des images: ${response.status} ${response.statusText}`);
+          }
         }
       } catch (err) {
         console.error('❌ Erreur réseau:', err);
-        setError('Erreur réseau lors du chargement des images');
+        setError('Erreur réseau lors du chargement des images. Vérifiez votre connexion.');
       } finally {
         setLoading(false);
       }
@@ -196,7 +206,10 @@ function PicsGalery() {
     <>
       <h1>Mes Images Générées</h1>
       {images.length === 0 ? (
-        <p>Vous n'avez pas encore généré d'images.</p>
+        <div className="no-images-message">
+          <p>🎨 Vous n'avez pas encore généré d'images.</p>
+          <p>Allez dans la section <a href="/user/generation">Génération</a> pour créer votre première image !</p>
+        </div>
       ) : (
         <div className="gallery-grid">
           {images.map((image) => (

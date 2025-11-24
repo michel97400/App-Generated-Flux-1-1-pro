@@ -36,9 +36,11 @@ export async function apiFetch(endpoint: string, options: FetchOptions = {}) {
         // Retry la requête originale
         return fetch(`${API_BASE_URL}${endpoint}`, config);
       } else {
-        // Rediriger vers login si le refresh échoue
-        window.location.href = '/login';
-        throw new Error('Session expired');
+        // Au lieu de rediriger automatiquement, laisser l'appelant gérer l'erreur
+        console.warn('Session expirée - refresh token échoué');
+        // Ne pas rediriger automatiquement pour éviter les problèmes de navigation
+        // window.location.href = '/login';
+        return response; // Retourner la réponse 401 originale
       }
     }
 
