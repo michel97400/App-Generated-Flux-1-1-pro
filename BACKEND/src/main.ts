@@ -26,13 +26,13 @@ async function bootstrap() {
 
   // Activer CORS pour le frontend
   app.enableCors({
-    origin: 'http://localhost:5173', // URL du frontend Vite
+    origin: ['http://localhost:5173', 'https://goodpicsbackend.internal.livelybeach-51c2e15c.westeurope.azurecontainerapps.io'], // URLs du frontend dev et prod
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // ✅ Permet l'envoi des cookies
     allowedHeaders: 'Content-Type, Authorization',
   });
 
-  const port = process.env.PORT ?? 3000;
+  const port = process.env.PORT ?? 80;
   await app.listen(port, '0.0.0.0');
 
   logger.log(`🚀 Application démarrée sur le port ${port}`);
