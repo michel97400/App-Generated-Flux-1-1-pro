@@ -22,7 +22,7 @@ export class ImagesService {
     return this.imageRepository.save(image);
   }
 
-  async getUserImages(userId: string): Promise<Image[]> {
+  async getUserImages(userId: string): Promise<any[]> {
     const images = await this.imageRepository
       .createQueryBuilder('image')
       .select([
