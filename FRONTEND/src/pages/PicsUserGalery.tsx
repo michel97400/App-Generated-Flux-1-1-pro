@@ -92,15 +92,26 @@ function PicsGalery() {
   useEffect(() => {
     const fetchImages = async () => {
       try {
+        console.log('🔍 Tentative de récupération des images...');
         const response = await apiGet('/images/my-images');
+        console.log('📡 Réponse reçue:', {
+          status: response.status,
+          statusText: response.statusText,
+          ok: response.ok
+        });
+        
         if (response.ok) {
           const data = await response.json();
+          console.log('✅ Images récupérées:', data);
           setImages(data);
         } else {
-          setError('Erreur lors du chargement des images');
+          const errorText = await response.text();
+          console.error('❌ Erreur API:', errorText);
+          setError(`Erreur lors du chargement des images: ${response.status} ${response.statusText}`);
         }
       } catch (err) {
-        setError('Erreur réseau');
+        console.error('❌ Erreur réseau:', err);
+        setError('Erreur réseau lors du chargement des images');
       } finally {
         setLoading(false);
       }

@@ -15,7 +15,14 @@ export class ImagesController {
   @UseGuards(JwtAuthGuard)
   async getMyImages(@GetUser() user: User) {
     console.log('📋 [ImagesController] getMyImages appelé pour user:', user.userId);
-    return this.imagesService.getUserImages(user.userId);
+    try {
+      const images = await this.imagesService.getUserImages(user.userId);
+      console.log('✅ [ImagesController] Images trouvées:', images.length);
+      return images;
+    } catch (error) {
+      console.error('❌ [ImagesController] Erreur lors de la récupération des images:', error);
+      throw error;
+    }
   }
 
   @Delete(':id')
