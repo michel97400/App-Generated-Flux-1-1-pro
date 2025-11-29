@@ -8,7 +8,7 @@ import { User } from '../users/entities/user.entity';
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
-@Post('message')
+  @Post('message')
   @UseGuards(JwtAuthGuard)
   async sendMessage(
     @GetUser() user: User, 
@@ -19,9 +19,17 @@ export class ChatController {
     console.log('👤 User:', user?.userId || 'undefined');
     console.log('📝 Message:', message?.substring(0, 50) + '...');
     console.log('🆔 ConversationId:', conversationId || 'default');
-    
-    const response = await this.chatService.sendMessage(user.userId, message, conversationId || 'default');
-    return { response };
+    try {
+      const response = await this.chatService.sendMessage(user.userId, message, conversationId || 'default');
+      return { response };
+    } catch (error) {
+      // Log détaillé pour debug Render
+      console.error('❌ Erreur dans ChatController.sendMessage:', error);
+      if (error instanceof Error) {
+        return { response: `Erreur: ${error.message}` };
+      }
+      return { response: 'Erreur inconnue dans ChatController' };
+    }
   }
 
   @Get('history')
