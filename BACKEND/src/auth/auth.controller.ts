@@ -30,19 +30,20 @@ export class AuthController {
   async login(@Body() loginDto: LoginDto, @Request() req, @Res({ passthrough: true }) res: Response) {
     const result = await this.authService.login(req.user);
     
-    // ✅ Définir les cookies httpOnly
+    // ✅ Définir les cookies httpOnly compatibles cross-site (Render)
     res.cookie('access_token', result.access_token, {
-      httpOnly: true,        // Inaccessible via JavaScript
-      secure: false,         // true en production avec HTTPS
-      sameSite: 'lax',       // Protection CSRF
+      httpOnly: true,
+      secure: true,           // obligatoire sur Render (HTTPS)
+      sameSite: 'none',       // obligatoire pour cross-site
       maxAge: 15 * 60 * 1000, // 15 minutes
     });
-    
+
     res.cookie('refresh_token', result.refresh_token, {
       httpOnly: true,
-      secure: false,         // true en production
-      sameSite: 'lax',
+      secure: true,           // obligatoire sur Render (HTTPS)
+      sameSite: 'none',       // obligatoire pour cross-site
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
+      path: '/auth/refresh',  // pour limiter le scope
     });
     
     // Retourner uniquement les données utilisateur (pas les tokens)
@@ -75,19 +76,20 @@ export class AuthController {
     // Générer de nouveaux tokens
     const tokens = await this.authService.generateTokens(user);
     
-    // Mettre à jour les cookies
+    // Mettre à jour les cookies (Render)
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 15 * 60 * 1000,
     });
-    
+
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/auth/refresh',
     });
     
     return {

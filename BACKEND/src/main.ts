@@ -27,21 +27,21 @@ async function bootstrap() {
 
   // Activer CORS pour le frontend
   app.enableCors({
-  origin: (origin, callback) => {
-    if (
-      !origin ||
-      origin === 'http://localhost:5173' ||
-      origin.startsWith('https://app-generated-flux-1-1-static.onrender.com')
-    ) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-  allowedHeaders: 'Content-Type, Authorization',
-});
+    origin: (origin, callback) => {
+      if (
+        !origin ||
+        origin === 'http://localhost:5173' ||
+        origin.startsWith('https://app-generated-flux-1-1-static.onrender.com')
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    allowedHeaders: 'Content-Type, Authorization',
+  });
 
   // Configuration Swagger pour la documentation API
   const config = new DocumentBuilder()
