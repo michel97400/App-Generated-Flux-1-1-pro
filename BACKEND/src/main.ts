@@ -27,7 +27,7 @@ async function bootstrap() {
 
   // Activer CORS pour le frontend
   app.enableCors({
-    origin: ['http://localhost:5173', 'https://app-generated-flux-1-1-pro-front.onrender.com'], // URLs du frontend dev et prod
+    origin: ['http://localhost:5173', 'https://app-generated-flux-1-1-static.onrender.com'], // URLs du frontend dev et prod
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // ✅ Permet l'envoi des cookies
     allowedHeaders: 'Content-Type, Authorization',
