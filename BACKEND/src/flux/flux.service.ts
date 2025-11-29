@@ -122,7 +122,9 @@ export class FluxService {
 
     // Générer l'URL pour accéder à l'image
     const filename = path.basename(finalPath);
-    const url = `http://localhost:3000/uploads/${filename}`;
+    // Utiliser l'URL du backend depuis la config (variable d'environnement BACKEND_BASE_URL)
+    const backendBaseUrl = this.configService.get<string>('BACKEND_BASE_URL') || 'http://localhost:3000';
+    const url = `${backendBaseUrl.replace(/\/$/, '')}/uploads/${filename}`;
 
     this.logger.log(`💾 Image sauvegardée: ${finalPath}`);
     this.logger.log(`📊 Taille: ${(fileSize / 1024).toFixed(2)} KB`);
