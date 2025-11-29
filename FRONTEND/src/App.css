@@ -253,15 +253,13 @@ h3 { font-size: 1.75rem; }
   font-size: 1rem;
   transition: all 0.3s ease;
   font-family: inherit;
-  background: #050608;
-  color: #e2e8f0;
+  background: #f6f7f9;
+  color: #0d0d0d;
 }
 
 .form-input:focus {
-  outline: none;
   border-color: #667eea;
-  background: #030405;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+  background: #b4cbe2;
 }
 
 .form-input::placeholder {
@@ -271,7 +269,7 @@ h3 { font-size: 1.75rem; }
 /* Erreurs de validation */
 .input-error {
   border-color: #fc8181 !important;
-  background: #fff5f5 !important;
+  background: #dd7f7f !important;
 }
 
 .input-error:focus {
