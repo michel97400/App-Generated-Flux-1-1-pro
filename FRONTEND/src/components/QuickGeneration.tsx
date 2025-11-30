@@ -26,15 +26,8 @@ const QuickGeneration: React.FC = () => {
   // Exemples de prompts
   const promptExamples = [
     "Un chaton mignon jouant avec une pelote de laine",
-    "Un paysage montagneux au coucher du soleil",
-    "Une ville futuriste avec des buildings illuminés",
     "Un portrait de femme avec des fleurs dans les cheveux",
     "Un dragon majestueux volant dans le ciel",
-    "Une forêt enchantée avec des lucioles",
-    "Un robot amical dans un jardin",
-    "Une plage tropicale avec des palmiers",
-    "Un château médiéval sur une colline",
-    "Un astronaute marchant sur la lune"
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -105,13 +98,13 @@ const QuickGeneration: React.FC = () => {
   return (
     <div className="quick-generation">
       <div className="generation-header">
-        <h2>Génération d'Images</h2>
+        <h2><span className="logo-icon">✨</span>Good Pics</h2>
         <p>Créez des images uniques avec l'IA. Utilisez des prompts détaillés pour de meilleurs résultats.</p>
       </div>
       
       {/* Section des exemples de prompts */}
       <div className="prompt-examples">
-        <h3>Exemples de prompts</h3>
+        <h3>Exemples de prompts:</h3>
         <div className="examples-grid">
           {promptExamples.map((example, index) => (
             <button
@@ -144,10 +137,7 @@ const QuickGeneration: React.FC = () => {
       </form>
       
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      
-      <div className="api-status">
-        <small>🔗 {apiStatus}</small>
-      </div>
+    
     </div>
   );
 };

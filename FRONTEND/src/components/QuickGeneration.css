@@ -14,6 +14,9 @@
 .generation-header {
   margin-bottom: 40px;
   max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .quick-generation h2 {
@@ -22,12 +25,30 @@
   color: #667eea;
   font-weight: 300;
   letter-spacing: -0.5px;
+  font-weight: bold;
+   background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.08);
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 40px;
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    inset 0 2px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 22px;
+  width: 400Px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 10px;
 }
 
 .quick-generation > .generation-header p {
-  font-size: 1.1rem;
+  font-size: 1.6rem;
   margin-bottom: 0;
-  color: #e2e8f0;
+  color: #fff;
   opacity: 0.8;
   line-height: 1.6;
 }
@@ -118,9 +139,9 @@
 .prompt-examples h3 {
   font-size: 1.3rem;
   margin-bottom: 20px;
-  color: #e2e8f0;
+  color: #f1f2f5;
   font-weight: 400;
-  opacity: 0.9;
+
 }
 
 .examples-grid {
@@ -158,12 +179,12 @@
 
 .quick-form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 20px;
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
+  width: 50%;
+  max-width: 1000px;
+
 }
 
 .input-container {
@@ -172,15 +193,13 @@
 }
 
 .quick-input {
-  width: 100%;
-  padding: 20px;
   font-size: 1rem;
   outline: none;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 15px;
   background: 
     linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
-    rgba(45, 55, 72, 0.8);
+    rgba(11, 13, 17, 0.8);
   color: #e2e8f0;
   resize: vertical;
   backdrop-filter: blur(10px);
@@ -188,10 +207,11 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   font-family: inherit;
+  max-height: 100px;
 }
 
 .quick-input:focus {
-  border-color: rgba(102, 126, 234, 0.5);
+  border-color: #fff;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   background: 
     linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),

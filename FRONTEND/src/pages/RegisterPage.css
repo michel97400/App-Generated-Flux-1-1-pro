@@ -85,7 +85,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    color: #050404;
+    color: #f8f4f4;
 }
 
 .form-group label {
@@ -101,7 +101,8 @@
     font-size: 1rem;
     transition: all 0.3s ease;
     font-family: inherit;
-    color: #080707;
+    color: #0a0909;
+    background-color: #fff;
 }
 
 .form-group input:focus {
@@ -112,7 +113,7 @@
 
 .form-group input[type="date"] {
     cursor: pointer;
-    
+    color: #000;
 }
 
 /* Checkbox */

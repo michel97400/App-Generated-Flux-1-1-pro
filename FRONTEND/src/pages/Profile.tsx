@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { apiPatch } from '../utils/api';
-
+import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../utils/api';
 
 function Profile() {
   const { user, refreshAuth } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const { logout } = useAuth(); // ✅ Ok
+  const navigate = useNavigate();
+   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false); // ✅ Ajoute ça
   const [formData, setFormData] = useState({
     userName: '',
     userLastname: '',
@@ -33,9 +37,6 @@ function Profile() {
     return <p>Utilisateur non connecté.</p>;
   }
 
-  if (!user) {
-    return <p>Utilisateur non connecté.</p>;
-  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -45,29 +46,58 @@ function Profile() {
     }));
   };
 
+
+  
+  const deleteAccount = async () => {
+    
+    const userId = user.userId; // ✅ Ok
+    setLoading(true);
+    try {
+      const response = await apiFetch(`/users/${userId}`, {  // ✅ apiFetch (pas apiPatch)
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Erreur lors de la suppression');
+      }
+      
+      console.log(data);
+      
+      await logout(); // ✅ Ajoute await (logout est async)
+      alert('Compte Supprimé !')
+      navigate('/login');
+      
+    } catch (error: any) {
+      console.error('Erreur:', error);
+      setMessage(`Erreur: ${error?.message || 'Erreur lors de la suppression'}`);
+    } finally {
+      setLoading(false);
+      setShowDeleteConfirm(false); // Ferme la modal après
+    }
+  };
+
   const handleSave = async () => {
     setLoading(true);
     setMessage('');
     try {
-      // Refresh the token first
-      const refreshed = await refreshAuth();
-      if (!refreshed) {
-        setMessage('Session expirée, veuillez vous reconnecter');
-        return;
-      }
-
       const response = await apiPatch(`/users/${user.userId}`, formData);
 
       if (response.ok) {
-        // Update the auth context
+        // Refresh l'utilisateur après la mise à jour
         await refreshAuth();
         setIsEditing(false);
         setMessage('Profil mis à jour avec succès !');
+      } else if (response.status === 401) {
+        setMessage('Session expirée, veuillez vous reconnecter');
       } else {
         const error = await response.json();
         setMessage(`Erreur: ${error.message || 'Erreur lors de la mise à jour'}`);
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Erreur:', error);
       setMessage('Erreur réseau lors de la mise à jour');
     }
     setLoading(false);
@@ -179,16 +209,38 @@ function Profile() {
               <span className="field-value">{user.userEmail}</span>
             </div>
             <div className="profile-field">
-              <span className="field-label">Adulte :</span>
-              <span className="field-value">{user.userIsadult ? 'Oui' : 'Non'}</span>
-            </div>
-            <div className="profile-field">
               <span className="field-label">Filtre de contenu :</span>
               <span className="field-value">{user.userContentFilter}</span>
             </div>
             <div className="profile-actions">
               <button onClick={() => setIsEditing(true)}>Modifier</button>
+              <button onClick={() => setShowDeleteConfirm(true)}>Supprimer mon compte</button>
             </div>
+            {/* ✅ Ajoute la modal de confirmation */}
+            {showDeleteConfirm && (
+              <div className="modal-overlay">
+                <div className="modal-content">
+                  <h2>Supprimer votre compte</h2>
+                  <p>Êtes-vous vraiment sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
+                  <div className="modal-actions">
+                    <button 
+                      onClick={() => deleteAccount()} 
+                      disabled={loading}
+                      className="confirm-delete-btn"
+                    >
+                      {loading ? 'Suppression...' : 'Oui, supprimer'}
+                    </button>
+                    <button 
+                      onClick={() => setShowDeleteConfirm(false)}
+                      disabled={loading}
+                      className="cancel-delete-btn"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
