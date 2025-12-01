@@ -10,8 +10,10 @@ import HeaderTemplate from '../src/templates/Header';
 import PicsGalery from './pages/PicsUserGalery';
 import QuickGeneration from './components/QuickGeneration';
 import Settings from './pages/SettingsUsers';
-
+import UseConditions from './pages/terms-of-use';
 import Chat from './pages/Chat';
+import Policy_Privacy from './pages/Privacy_Policy';
+
 
 function App() {
 
@@ -31,6 +33,8 @@ function App() {
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/conditions" element={<UseConditions />} />
+          <Route path="/policy" element={<Policy_Privacy />} />
         </Routes>
       </BrowserRouter>
 

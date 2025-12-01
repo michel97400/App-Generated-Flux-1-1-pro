@@ -468,5 +468,133 @@ h3 { font-size: 1.75rem; }
 }
 
 
+/*Page conditions*/
+/*Page de politique de confidentialité*/
+.container-conditions {
+    min-height: 100vh;
+    background: linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%);
+  }
+
+  .header {
+    background: linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%);
+    color: white;
+    padding: 48px 24px;
+  }
+
+  .header-content {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .header h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .header p {
+    color: #dbeafe;
+  }
+
+  .content {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  .section {
+    border-bottom: 1px solid #d1d5db;
+  }
+
+  .section-button {
+    width: 100%;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    transition: background-color 0.2s;
+  }
+
+
+
+  .section-title {
+    margin: 0;
+    text-align: left;
+  }
+
+  .chevron {
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+
+  .chevron.rotated {
+    transform: rotate(180deg);
+  }
+
+  .section-content {
+    padding: 16px 24px;
+
+    border-radius: 10px;
+    color: #374151;
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      max-height: 0;
+    }
+    to {
+      opacity: 1;
+      max-height: 1000px;
+    }
+  }
+
+  .section-content p {
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+
+  .section-content p:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-content strong {
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .section-content ul {
+    margin-top: 8px;
+    margin-left: 20px;
+  }
+
+  .section-content li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+
+  .footer {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid #d1d5db;
+    text-align: center;
+    font-size: 14px;
+    color: #4b5563;
+  }
+
+  .footer p {
+    margin-bottom: 8px;
+  }
+
+
+
 
 

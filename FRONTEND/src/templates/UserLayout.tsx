@@ -10,11 +10,6 @@ function UserLayout() {
         <nav>
           <ul>
             <li>
-              <Link to="" className="menu-link" title="Profil">
-                <User size={24} />
-              </Link>
-            </li>
-            <li>
               <Link to="generation" className="menu-link" title="Génération">
                 <Sparkles size={24} />
               </Link>
@@ -27,6 +22,11 @@ function UserLayout() {
             <li>
               <Link to="chat" className="menu-link" title="Chat IA">
                 <MessageCircleMore size={24}/>
+              </Link>
+            </li>
+            <li>
+              <Link to="" className="menu-link" title="Profil">
+                <User size={24} />
               </Link>
             </li>
             <li>

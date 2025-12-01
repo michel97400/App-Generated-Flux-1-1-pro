@@ -253,7 +253,7 @@ function Register() {
                                 {...register('userAcceptedPolicy')}
                             />
                             <label htmlFor="userAcceptedPolicy">
-                                J'accepte les <Link to="/terms" className="link">conditions d'utilisation</Link> et la <Link to="/privacy" className="link">politique de confidentialité</Link> (RGPD)
+                                J'accepte les <Link to="/conditions" className="link">conditions d'utilisation</Link> et la <Link to="/policy" className="link">politique de confidentialité</Link> (RGPD)
                             </label>
                         </div>
                         {errors.userAcceptedPolicy && (
